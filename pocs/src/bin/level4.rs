@@ -2,6 +2,7 @@
 
 use std::{env, str::FromStr};
 
+use borsh::BorshSerialize;
 use owo_colors::OwoColorize;
 use poc_framework::solana_sdk::signature::Keypair;
 use poc_framework::spl_associated_token_account::get_associated_token_address;
@@ -9,7 +10,9 @@ use poc_framework::{
     keypair, solana_sdk::signer::Signer, Environment, LocalEnvironment, PrintableTransaction,
 };
 
+use solana_program::instruction::Instruction;
 use solana_program::{native_token::sol_to_lamports, pubkey::Pubkey, system_program};
+use solana_program::instruction::AccountMeta;
 
 struct Challenge {
     hacker: Keypair,
@@ -21,14 +24,14 @@ struct Challenge {
 
 // Do your hacks in this function here
 fn hack(env: &mut LocalEnvironment, challenge: &Challenge) {
-    assert_tx_success(env.execute_as_transaction(
+    env.execute_as_transaction(
         &[level4::initialize(
             challenge.wallet_program,
             challenge.hacker.pubkey(),
             challenge.mint,
         )],
         &[&challenge.hacker],
-    ));
+    );
 
     let hacker_wallet_address = level4::get_wallet_address(
         &challenge.hacker.pubkey(),
