@@ -22,7 +22,7 @@ struct Challenge {
 }
 
 // Do your hacks in this function here; this hacks wallet owner not checked aginst program_id
-fn hack(_env: &mut LocalEnvironment, _challenge: &Challenge) {
+fn hack(env: &mut LocalEnvironment, challenge: &Challenge) {
 
     // Step 0: how much money do we want to steal?
     let amount = env.get_account(challenge.vault_address).unwrap().lamports;

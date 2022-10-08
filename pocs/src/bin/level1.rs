@@ -20,7 +20,7 @@ struct Challenge {
 }
 
 // Do your hacks in this function here
-fn hack(_env: &mut LocalEnvironment, _challenge: &Challenge) {
+fn hack(env: &mut LocalEnvironment, challenge: &Challenge) {
     let tx = env.execute_as_transaction(
         // we construct the instruction manually here
         // because the level1::withdraw function sets the is_signer flag on the authority

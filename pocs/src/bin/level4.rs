@@ -21,7 +21,7 @@ struct Challenge {
 }
 
 // Do your hacks in this function here
-fn hack(_env: &mut LocalEnvironment, _challenge: &Challenge) {
+fn hack(env: &mut LocalEnvironment, challenge: &Challenge) {
     assert_tx_success(env.execute_as_transaction(
         &[level4::initialize(
             challenge.wallet_program,
