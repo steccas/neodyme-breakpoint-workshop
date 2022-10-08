@@ -12,5 +12,3 @@ target/
 book-target
 
 test-ledger/
-
-.vscode/
