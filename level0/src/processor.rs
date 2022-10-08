@@ -110,6 +110,7 @@ fn withdraw(_program_id: &Pubkey, accounts: &[AccountInfo], amount: u64) -> Prog
     assert!(authority_info.is_signer);
     assert_eq!(wallet.authority, *authority_info.key);
     assert_eq!(wallet.vault, *vault_info.key);
+    //assert_eq!(wallet_info.owner, _program_id); //fix
 
     if amount > **vault_info.lamports.borrow_mut() {
         return Err(ProgramError::InsufficientFunds);
